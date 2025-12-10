@@ -821,7 +821,7 @@
           aria-expanded="false"
           aria-controls="mobileNav"
         >
-          <i class="fa fa-bars" aria-hidden="true"></i>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -1144,7 +1144,12 @@
       </section>
 
       <!-- CONTACT -->
-      <section id="contact" class="fade-up contact-section">
+      <form
+        action="https://formspree.io/f/mkgdqbol"
+        method="POST"
+        class="fade-up contact-section"
+        id="contact"
+      >
         <h3>Plan Your Visit</h3>
         <p class="muted">
           Have questions or need local tips? Use the contact form below or reach
@@ -1152,20 +1157,36 @@
         </p>
 
         <div class="contact-fields">
-          <input type="text" placeholder="Full Name" class="contact-input" />
-          <input type="email" placeholder="Your email" class="contact-input" />
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            class="contact-input"
+            required
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            class="contact-input"
+            required
+          />
+
           <textarea
-            placeholder="Your message"
+            name="message"
+            placeholder="Your Message"
             rows="3"
             class="contact-input"
+            required
           ></textarea>
 
           <div class="contact-buttons">
-            <button class="cta">Send</button>
-            <button class="card clear-btn">Clear</button>
+            <button type="submit" class="cta">Send</button>
+            <button type="reset" class="card clear-btn">Clear</button>
           </div>
         </div>
-      </section>
+      </form>
 
       <!-- FOOTER -->
       <footer>
@@ -1262,12 +1283,23 @@
       // Mobile nav
       const menuBtn = document.getElementById("menuBtn");
       const mobileNav = document.getElementById("mobileNav");
+      const icon = menuBtn.querySelector("i");
+
       menuBtn.addEventListener("click", () => {
-        const open = mobileNav.style.display === "flex";
-        mobileNav.style.display = open ? "none" : "flex";
-        menuBtn.setAttribute("aria-expanded", String(!open));
-        menuBtn.querySelector("i").classList.toggle("fa-bars");
-        menuBtn.querySelector("i").classList.toggle("fa-x");
+        const isOpen = mobileNav.style.display === "flex";
+
+        mobileNav.style.display = isOpen ? "none" : "flex";
+        menuBtn.setAttribute("aria-expanded", !isOpen);
+
+        icon.classList.toggle("fa-bars", isOpen);
+        icon.classList.toggle("fa-xmark", !isOpen);
+      });
+
+      // Prevent the menu from closing when clicking links
+      document.querySelectorAll("#mobileNav a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
       });
 
       const observer = new IntersectionObserver(
@@ -1296,10 +1328,6 @@
             document
               .querySelector(href)
               .scrollIntoView({ behavior: "smooth", block: "start" });
-            if (window.innerWidth < 720) {
-              mobileNav.style.display = "none";
-              menuBtn.setAttribute("aria-expanded", "false");
-            }
           }
         });
       });
